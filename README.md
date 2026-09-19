@@ -1,4 +1,4 @@
-# practica-1-bases-de-datos
+# Practica-1-bases-de-datos
 # Práctica 1: Modelo Entidad-Relación y Entorno de Trabajo
 
 * **Nombre completo:** 1. Daniel Alejandro Patiño Farias 2. Arath Sebastian Sanchez Valenzuela 3. Alejandro Rivas Ramirez
