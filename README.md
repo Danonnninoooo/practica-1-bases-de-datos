@@ -2,7 +2,7 @@
 # Práctica 1: Modelo Entidad-Relación y Entorno de Trabajo
 
 * **Nombre completo:**
-* 1. Daniel Alejandro Patiño Farias
+  1. Daniel Alejandro Patiño Farias
   2. Arath Sebastian Sanchez Valenzuela
   3. Alejandro Rivas Ramirez
 * **Boleta:** 1. [2025630978] 2. [2025630900] 
