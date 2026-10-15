@@ -19,8 +19,8 @@ Profesor: Gabriel Hurtado Avilés
 | Integrante | Usuario GitHub | Participación |
 |---|---|---|
 | Daniel Patiño Farias | Danonnninoooo | Modelo EER, esquema.sql, pruebas de restricciones, diagrama relacional, diccionario de datos, transformación, proyecto asignado (Sismos) |
-| Arath Sebastian Sanchez Valenzuela | Zuzuuuu2729 | Revisión y fusión de Pull Requests [COMPLETAR si hizo algo más] |
-| Alejandro Rivas Ramirez | [sin usuario en el repositorio] | [COMPLETAR] |
+| Arath Sebastian Sanchez Valenzuela | Zuzuuuu2729 | Revisión y fusión de Pull Requests |
+| Alejandro Rivas Ramirez | [sin usuario en el repositorio] | Sin participación en el repositorio a la fecha. |
 
 ## Proyecto propio
 
@@ -38,7 +38,7 @@ PostgreSQL 16 en contenedor Docker, configurado en [entorno/compose.yaml](entorn
 - [Diccionario de datos](practica3/proyecto-propio/diccionario-de-datos.pdf)
 - [Inventario, transformación y preservación del significado](practica3/proyecto-propio/Transformacion.pdf)
 - [Evidencias](practica3/evidencias)
-- Ejercicios 7 y 8 (esquema de Sismos y cambio individual): [COMPLETAR o indicar "pendiente"]
+- Ejercicios 7 y 8 (esquema de Sismos y cambio individual): pendiente.
 
 ## Cambios al modelo respecto a la Práctica 1
 
