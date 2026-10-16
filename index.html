@@ -1,1 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semanal Autos | Renta semanal de autos compactos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #10233a;
+    --paper: #f3f6f4;
+    --road: #1b3b5a;
+    --signal: #ffc400;
+    --ok: #1f8a5b;
+    --muted: #5b6b7b;
+    --line: #cfd9d6;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Archivo", system-ui, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.55; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
+  header { background: var(--road); color: #fff; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; }
+  .brand { font-weight: 800; font-stretch: 110%; font-size: 1.25rem; text-decoration: none; }
+  nav a.link { font-size: .95rem; text-decoration: none; margin-left: 22px; opacity: .85; }
+  nav a.link:hover { opacity: 1; text-decoration: underline; }
+
+  .hero { padding: 56px 0 72px; }
+  h1 { font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.05; font-weight: 800; font-stretch: 112%; max-width: 15ch; }
+  .lead { margin-top: 18px; max-width: 52ch; font-size: 1.1rem; opacity: .9; }
+
+  .week { margin-top: 40px; display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; max-width: 760px; }
+  .day { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 12px 6px; text-align: center; font-size: .85rem; }
+  .day b { display: block; font-size: 1.2rem; }
+  .day.check { background: var(--signal); color: var(--ink); border-color: var(--signal); font-weight: 700; }
+  .week-note { margin-top: 12px; font-size: .9rem; opacity: .8; }
+
+  section { padding: 64px 0; }
+  h2 { font-size: 1.8rem; font-stretch: 108%; font-weight: 800; margin-bottom: 28px; }
+
+  .price { display: flex; flex-wrap: wrap; gap: 32px; align-items: baseline; }
+  .price .amount { font-size: clamp(3rem, 9vw, 5.5rem); font-weight: 800; font-stretch: 115%; line-height: 1; }
+  .price p { max-width: 42ch; color: var(--muted); }
+
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 28px; }
+  .steps div { border-top: 4px solid var(--road); padding-top: 14px; }
+  .steps h3 { font-size: 1.1rem; margin-bottom: 6px; }
+  .steps p { color: var(--muted); font-size: .98rem; }
+
+  .cars { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 14px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: .9rem; }
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: .85rem; font-weight: 600; background: #dff3e8; color: var(--ok); }
+  .scroll { overflow-x: auto; }
+
+  .cta { text-align: center; }
+  .btn { display: inline-block; background: var(--signal); color: var(--ink); font-weight: 700; padding: 14px 28px; border-radius: 6px; text-decoration: none; }
+  .btn:hover { background: #ffd333; }
+  .cta p { color: var(--muted); margin-bottom: 20px; }
+
+  footer { background: var(--ink); color: #c7d3de; padding: 28px 0; font-size: .9rem; }
+  @media (max-width: 560px) { .week { grid-template-columns: repeat(4, 1fr); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#">Semanal Autos</a>
+      <div>
+        <a class="link" href="#como">Cómo funciona</a>
+        <a class="link" href="#autos">Autos</a>
+        <a class="link" href="#contacto">Contacto</a>
+      </div>
+    </nav>
+    <div class="hero">
+      <h1>Un auto compacto, una renta por semana.</h1>
+      <p class="lead">Rentas un March o un Versa, pagas cada semana y lo usas para trabajar. Nosotros lo revisamos cada ocho días para que siempre esté en buen estado.</p>
+      <div class="week" role="img" aria-label="Seis días de uso y el día ocho de revisión">
+        <div class="day"><b>1</b>Uso</div>
+        <div class="day"><b>2</b>Uso</div>
+        <div class="day"><b>3</b>Uso</div>
+        <div class="day"><b>4</b>Uso</div>
+        <div class="day"><b>5</b>Uso</div>
+        <div class="day"><b>6</b>Uso</div>
+        <div class="day"><b>7</b>Pago</div>
+        <div class="day check"><b>8</b>Revisión</div>
+      </div>
+      <p class="week-note">Cada ciclo: seis días de uso como mínimo, pago semanal y revisión completa.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap price">
+      <div class="amount">$2,300</div>
+      <p>por semana, aproximadamente. Un solo pago semanal, sin letras chiquitas: un contrato, un vehículo, una persona.</p>
+    </div>
+  </section>
+
+  <section id="como" style="padding-top:0">
+    <div class="wrap">
+      <h2>Cómo funciona</h2>
+      <div class="steps">
+        <div><h3>Firmas tu contrato</h3><p>Registramos tus datos y te asignamos un vehículo. Tienes un solo vehículo vigente a la vez.</p></div>
+        <div><h3>Pagas cada semana</h3><p>Cada pago queda registrado con su número de semana, así siempre sabes qué has cubierto.</p></div>
+        <div><h3>Revisamos el auto</h3><p>Cada ocho días un mecánico hace una inspección visual, mecánica y de fuerza. Tú no tienes que mandarlo a ningún taller.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cars" id="autos">
+    <div class="wrap">
+      <h2>Autos disponibles</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Modelo</th><th>Motor</th><th>Año</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Nissan March</td><td>1.6 L</td><td>2022</td><td><span class="tag">Disponible</span></td></tr>
+            <tr><td>Nissan Versa</td><td>1.6 L</td><td>2022</td><td><span class="tag">Disponible</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="contacto">
+    <div class="wrap">
+      <h2>Empieza esta semana</h2>
+      <p>Esta página es la portada del sistema terminado: la base de datos y el sistema completo viven en el repositorio del proyecto.</p>
+      <a class="btn" href="https://github.com/Danonnninoooo/practica-1-bases-de-datos">Ver el repositorio</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Proyecto de Bases de Datos, ESCOM-IPN, grupo 3CV4. Daniel Patiño Farias, Arath Sebastian Sanchez Valenzuela y Alejandro Rivas Ramirez.</div>
+</footer>
+
+</body>
+</html>
