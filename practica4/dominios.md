@@ -1,8 +1,8 @@
 # Dominios y tipos de datos — renta semanal de vehículos
 
-**Base:** `practica3/sql/esquema.sql`, modificada por `practica4/migraciones/001-dominios.sql` (PostgreSQL 16).
+**Base:** `practica3/sql/esquema.sql`, modificada por `practica4/migraciones/001-dominios.sql` y `practica4/migraciones/002-motores-mx.sql` (PostgreSQL 16).
 
-Un **dominio** delimita los valores admitidos por un atributo. `NOT NULL`, `UNIQUE`, `CHECK`, llaves primarias y foráneas preservan reglas del negocio. La tabla siguiente refleja los tipos después de la migración 001; `SERIAL` representa un entero autogenerado mediante secuencia.
+Un **dominio** delimita los valores admitidos por un atributo. `NOT NULL`, `UNIQUE`, `CHECK`, llaves primarias y foráneas preservan reglas del negocio. La tabla siguiente refleja los tipos después de las migraciones 001 y 002; `SERIAL` representa un entero autogenerado mediante secuencia.
 
 | Tabla | Columna(s) | Tipo, tamaño o precisión | Justificación |
 |---|---|---|---|
@@ -14,7 +14,7 @@ Un **dominio** delimita los valores admitidos por un atributo. `NOT NULL`, `UNIQ
 | cliente | cuenta_banco | VARCHAR(20) | CLABE opcional; CHECK exige 18 dígitos si existe. |
 | cliente_telefono | cod_cliente, telefono | INTEGER, d_telefono_mx | Identifica al cliente y valida teléfono nacional de 10 dígitos. |
 | modelo | id_modelo, marca, nombre | SERIAL, VARCHAR(30), VARCHAR(30) | Identificador y denominaciones de vehículo. |
-| modelo | litros_motor | NUMERIC(2,1) | Cilindrada con una cifra decimal; CHECK entre 0.6 y 6.0. |
+| modelo | litros_motor | NUMERIC(2,1) | Cilindrada con una cifra decimal; CHECK entre 0.6 y 7.0; NULL si no se confirmó. |
 | vehiculo | vin, color, anio, id_modelo | CHAR(17), VARCHAR(20), SMALLINT, INTEGER | VIN fijo y único; color, año y referencia a modelo. |
 | empleado | cod_empleado, nombre, ap_paterno | SERIAL, VARCHAR(60), VARCHAR(40) | Identificador y nombre del trabajador. |
 | empleado | fecha_ingreso, tipo | DATE, VARCHAR(15) | Fecha de alta y discriminador MECANICO/ADMINISTRATIVO. |
@@ -60,6 +60,6 @@ Un **dominio** delimita los valores admitidos por un atributo. `NOT NULL`, `UNIQ
 2. La jerarquía `empleado`–`mecanico`/`administrativo` impide que un subtipo tenga el discriminador incorrecto, pero **no garantiza por sí sola** que todo empleado tenga exactamente una fila en alguno de los subtipos (totalidad).
 3. `ck_revision_externa` exige observaciones no nulas pero permite texto vacío; si se quiere impedir esto, debe añadirse otra migración justificada.
 4. La validación de CURP comprueba patrón, no autenticidad oficial. La de correo es simplificada.
-5. `NUMERIC(2,1)` admite hasta 9.9, pero el `CHECK` limita la cilindrada a 6.0.
+5. `NUMERIC(2,1)` admite hasta 9.9, pero el `CHECK` limita la cilindrada a 7.0. La migración 002 permite NULL y mantiene la unicidad de (marca, nombre, litros_motor) con UNIQUE NULLS NOT DISTINCT; consultar [motores-mx.md](motores-mx.md).
 
 La migración 001 reportada anteriormente como ejecutada debe comprobarse también al reconstruir la base limpia. Este documento no sustituye las pruebas exigidas en `pruebas-dominio.md`.
