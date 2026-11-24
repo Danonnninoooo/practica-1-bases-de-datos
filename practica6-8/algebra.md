@@ -174,3 +174,7 @@ docker exec -i pg-curso psql -U usuario_consulta_renta -d practica45 -X -qAt -v 
 Con la carga observada: 01 = 60; 02 = 8; 03 = 86; 04 = 9; 05 = 51; 06 = 8; 07 = 1; 08 = 4 (60 por color); 09 = 240. Estos son cálculos sobre el generador y la carga previa, no evidencias de ejecución. Si cambia la base, deben recalcularse. La salida final del archivo SQL imprime las cardinalidades observadas.
 
 Referencia de sintaxis: [ayuda de RelaX](https://relax.labs.schubotz.org/relax/help) y [documentación del proyecto](https://github.com/dbis-uibk/relax). Las expresiones todavía deben probarse en el editor.
+
+## Ejecución SQL observada — 24 de noviembre de 2026
+
+La captura de la ejecución en PostgreSQL 16 muestra el resumen de cardinalidades 01=60, 02=8, 03=86, 04=9, 05=51, 06=8, 07=1, 08=4 y 09=240, seguido de COMMIT. Las nueve consultas terminaron. El archivo `resultados-sql.txt` y la captura `evidencias/11-resultados-algebra-sql.png` deben adjuntarse al repositorio. La comparación con RelaX todavía no se ha ejecutado.
