@@ -28,7 +28,7 @@ Mantener la terminal del servidor abierta. No se necesita PostgreSQL ni Docker p
 
 ## Tres consultas de la versión actual
 
-Base de las consultas: [ejemplos SQL del código del fork](https://github.com/Danonnninoooo/Seismic_Data_Geosciences/blob/main/system/dist/sql-panel.js#L92-L97) y [esquema de SQLite](https://github.com/Danonnninoooo/Seismic_Data_Geosciences/blob/main/system/dist/sql-explorer.js). Adaptamos las consultas de inspección, catálogo y años. En Explore elegir los cuatro catálogos, años 2017–2025, magnitud reportada mínima 5.9 y máxima 10, sin agrupar copias exactas, sin restricciones adicionales de ubicación. Después construir la instantánea en SQL explorer. Mantener la misma selección para las tres consultas.
+Base de las consultas: [ejemplos SQL del código del fork](https://github.com/Danonnninoooo/Seismic_Data_Geosciences/blob/main/system/dist/sql-panel.js#L92-L97) y [esquema de SQLite](https://github.com/Danonnninoooo/Seismic_Data_Geosciences/blob/main/system/dist/sql-explorer.js). Adaptamos las consultas de inspección, catálogo y años. Mantener activa la selección de los cuatro catálogos, sin agrupación de copias exactas y sin restricciones adicionales. La captura de la primera consulta muestra 10 filas y una selección amplia (el grupo guiado SSN muestra 242288 registros). Para evitar cambiar la instantánea y para que el tercer ejercicio sea reproducible, los filtros de años y magnitud de ese ejercicio se incluyen en su SQL. Los ejercicios 01 y 02 ya filtran explícitamente por 2017 y magnitud mínima 6. La selección exacta se puede confirmar mediante la exportación JSON de evidencia.
 
 ### 1. Selección y proyección
 
@@ -60,19 +60,20 @@ ORDER BY r.record_key;
 
 ### 3. Agrupación
 
-¿Cuántos registros fuente contiene la selección por año?
+¿Cuántos registros fuente de magnitud reportada entre 5.9 y 10 contiene la selección por año entre 2017 y 2025?
 
 ```sql
 SELECT year, COUNT(*) AS cantidad
 FROM records
+WHERE year BETWEEN 2017 AND 2025 AND mag BETWEEN 5.9 AND 10
 GROUP BY year
 ORDER BY year;
 ```
 
-Álgebra extendida: γ year; count(*)->cantidad (records). Árbol: records → agrupación γ (operador principal). No se interpreta como tasa sísmica ni como conteo de eventos físicos únicos.
+Álgebra extendida: γ year; count(*)->cantidad (σ year>=2017 ∧ year<=2025 ∧ mag>=5.9 ∧ mag<=10 (records)). Árbol: records → selección σ → agrupación γ (operador principal). No se interpreta como tasa sísmica ni como conteo de eventos físicos únicos.
 
 ## Evidencias y límites
 
-Pendiente: ejecutar las tres consultas SQLite, comparar sus resultados, exportar una proyección de la misma selección a RelaX y publicar el fork propio. Los resultados dependerán de los filtros de la instantánea, no del total inicial de registros. Las evidencias del sistema anterior PHP/PostgreSQL se conservan en consultas.md; no son evidencias del nuevo SQLite.
+Consulta 01 observada el 24 de noviembre de 2026: 10 filas de 2017, 11 ms mostrados por la interfaz (no constituye un benchmark). Pendiente: adjuntar evidencia 30, ejecutar las consultas 02 y 03, comparar sus resultados, exportar una proyección de la misma selección a RelaX y publicar el fork propio. Los 10 registros no equivalen necesariamente a diez eventos físicos distintos; el almacén anterior también utilizaba otra cobertura y un JOIN con una tabla de hechos. Los resultados dependerán de los filtros de la instantánea, no del total inicial de registros. Las evidencias del sistema anterior PHP/PostgreSQL se conservan en consultas.md; no son evidencias del nuevo SQLite.
 
 Evidencias de montaje por adjuntar: 27-sismos-version-publicada.png, 28-sismos-fork-actualizado.png y 29-sismos-observatorio-local.png.
