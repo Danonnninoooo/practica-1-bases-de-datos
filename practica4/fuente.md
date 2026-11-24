@@ -55,7 +55,7 @@ La información de vPIC está en JSON, un archivo por marca, sin credenciales. C
 | `Count` | No se almacena | Metadato de la respuesta para verificación de cantidad. |
 | `Message` | No se almacena | Metadato del resultado de API. |
 | `SearchCriteria` | No se almacena | Describe el criterio de búsqueda, no una columna de modelo. |
-| *No viene en vPIC* | `modelo.litros_motor` | El script actual asigna un valor sintético determinista: NO es especificación oficial del motor. |
+| *No viene en vPIC* | `modelo.litros_motor` | Se consulta el [catálogo mexicano de motores](motores-mx.md); 68 valores de referencia y cinco desconocidos (NULL). |
 
 ## 4. Limpieza, problemas y decisiones
 
@@ -63,7 +63,7 @@ La información de vPIC está en JSON, un archivo por marca, sin credenciales. C
 |---|---|
 | El catálogo incluye motocicletas, todoterreno y vehículos distintos de los autos de alquiler propuestos (en especial Honda). | Conservar todos los JSON crudos; filtrar por lista explícita de modelos elegidos en `10-modelo.sql`. |
 | Algunos nombres no corresponden a los autos previstos o tienen denominaciones distintas. | Solo cargar coincidencias exactas sin distinguir mayúsculas/minúsculas. |
-| El catálogo no informa la cilindrada. | Usar un valor sintético para el ejercicio y declararlo; revisar si conviene obtener cilindradas verificadas. |
+| El catálogo no informa la cilindrada. | La fórmula sintética de la primera carga fue sustituida por referencias mexicanas; se conserva el dato original de marca/modelo y el identificador. Consultar [motores-mx.md](motores-mx.md). |
 | Son catálogos de NHTSA, no catálogos específicos de comercialización en México. | Documentar el recorte del caso y no afirmar que todos los modelos se ofrecen en México. |
 | La fuente contiene más registros que la lista seleccionada. | De 723 registros, 73 coinciden con la lista del script y 650 no coinciden; comprobación sobre los JSON descargados. |
 
@@ -81,7 +81,7 @@ La información de vPIC está en JSON, un archivo por marca, sin credenciales. C
 | Volkswagen | 7 |
 | **Total** | **73** |
 
-Este conteo refleja la selección del script sobre los archivos crudos; **no demuestra que la base PostgreSQL ya haya sido poblada**. Esa ejecución y su segunda corrida requieren capturas/salidas reales.
+La primera carga y su repetición se comprobaron con las [evidencias](evidencias/). La corrección posterior de cilindradas requiere aplicar la migración 002 y repetir la carga; su ejecución está pendiente de comprobación.
 
 ## 5. Datos sintéticos y carga
 
