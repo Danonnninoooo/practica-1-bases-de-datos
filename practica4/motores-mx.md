@@ -81,3 +81,7 @@ Fuentes consultadas el 24 de noviembre de 2026. CONUEE: [catálogo 2022](https:/
 | Volkswagen | Tiguan | 1.4 | 2023 | CONUEE | [Consultar](https://www.gob.mx/cms/uploads/attachment/file/913595/Cat_logo_de_Rendimientos_2023_mayo2024.pdf) |
 
 El archivo ejecutable de referencia es [`poblar/08-motores-mx.sql`](poblar/08-motores-mx.sql). La migración 002 permite motores de hasta 7.0 litros y valores desconocidos. La carga corrige las filas existentes sin cambiar `id_modelo`. No se recrean VIN, contratos ni otras entidades. Las cinco cilindradas desconocidas deben revisarse antes de considerar el catálogo completamente documentado.
+
+## Ejecución observada — 24 de noviembre de 2026
+
+La migración 002 terminó con COMMIT. La carga posterior reportó 62 cilindradas actualizadas, 73 modelos (68 con valor, 5 sin confirmar), 0 filas nuevas en las 13 tablas y 240 vehículos conservados. El SELECT de Chevrolet devolvió los 12 modelos con las cilindradas del catálogo. Se conservan 241 clientes y 241 teléfonos, incluido el registro web. Las capturas correspondientes se guardarán en `evidencias/10-motores-mx-parte1.png` y `evidencias/10-motores-mx-parte2.png`.
