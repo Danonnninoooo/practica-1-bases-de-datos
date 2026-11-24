@@ -81,7 +81,7 @@ La información de vPIC está en JSON, un archivo por marca, sin credenciales. C
 | Volkswagen | 7 |
 | **Total** | **73** |
 
-La primera carga y su repetición se comprobaron con las [evidencias](evidencias/). La corrección posterior de cilindradas requiere aplicar la migración 002 y repetir la carga; su ejecución está pendiente de comprobación.
+La primera carga y su repetición se comprobaron con las [evidencias](evidencias/). La migración 002 y la carga de corrección se comprobaron el 24 de noviembre de 2026: 62 cilindradas actualizadas, cero inserciones adicionales y 73 modelos conservados (68 con valor y 5 desconocidos). Ver [catálogo de motores](motores-mx.md).
 
 ## 5. Datos sintéticos y carga
 
