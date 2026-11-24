@@ -2,7 +2,7 @@
 
 ## Alcance
 
-Este análisis parte del esquema de la práctica 3 y de la migración 001 de la práctica 4. Presenta la decisión de normalización para la exposición del segundo parcial. Queda pendiente contrastar el conjunto de entregables con la rúbrica específica de las prácticas 6–8.
+Este análisis parte del esquema de la práctica 3 y de las migraciones 001 y 002 de la práctica 4. Presenta la decisión de normalización para la exposición del segundo parcial. Se sigue el alcance indicado en el documento del segundo parcial.
 
 ## 1. Relación inicial y reglas de negocio
 
@@ -10,7 +10,7 @@ Una alternativa no normalizada en cuanto a dependencias sería almacenar todos l
 
 `VEHICULO_AMPLIADO(vin, color, anio, id_modelo, marca, nombre, litros_motor)`.
 
-Un VIN identifica una unidad física; un modelo puede corresponder a muchos vehículos. El esquema declara además UNIQUE(marca, nombre, litros_motor) y los tres atributos NOT NULL en modelo. La cilindrada se entiende como parte de la variante del modelo y, en la carga de prueba, es sintética.
+Un VIN identifica una unidad física; un modelo puede corresponder a muchos vehículos. El esquema declara UNIQUE NULLS NOT DISTINCT(marca, nombre, litros_motor). Marca y nombre son obligatorios; litros_motor puede ser NULL si no se confirmó una referencia mexicana. Para el análisis formal clásico se considera el subconjunto de modelos con cilindrada conocida, donde los tres atributos tienen valores definidos.
 
 Dependencias funcionales relevantes (F):
 
@@ -35,7 +35,7 @@ Se descompone en las tablas que ya existen:
 | Relación | Atributos | Claves candidatas |
 |---|---|---|
 | vehiculo | vin, color, anio, id_modelo | {vin} |
-| modelo | id_modelo, marca, nombre, litros_motor | {id_modelo}; {marca, nombre, litros_motor} |
+| modelo | id_modelo, marca, nombre, litros_motor | {id_modelo}; {marca, nombre, litros_motor} solo en el subconjunto con cilindrada conocida |
 
 vehiculo.id_modelo es una clave foránea no nula que referencia modelo.id_modelo. Se puede insertar un modelo sin vehículos, modificar su descripción en un solo renglón y evitar perder el modelo al eliminar su último vehículo.
 
@@ -44,9 +44,9 @@ vehiculo.id_modelo es una clave foránea no nula que referencia modelo.id_modelo
 La forma normal de Boyce-Codd exige que, para cada dependencia funcional no trivial X → Y, X sea superclave.
 
 - En vehiculo, vin es clave y determina color, anio e id_modelo.
-- En modelo, id_modelo y (marca, nombre, litros_motor) son claves candidatas; ambas determinan los restantes atributos.
+- En modelo, id_modelo es la clave primaria. En el subconjunto con cilindrada conocida, (marca, nombre, litros_motor) es también una clave candidata; ambas determinan los restantes atributos. En SQL el UNIQUE NULLS NOT DISTINCT impide duplicados con NULL, pero no convierte una columna anulable en clave candidata clásica.
 
-Bajo las dependencias declaradas, ambas relaciones cumplen FNBC y, por consiguiente, 3FN. La conclusión se limita a estas dos tablas; no es una afirmación global sobre las trece tablas.
+Bajo las dependencias declaradas, ambas relaciones cumplen FNBC y, por consiguiente, 3FN en el análisis relacional clásico de datos completos. La conclusión se limita a estas dos tablas; no es una afirmación global sobre las trece tablas.
 
 La intersección es {id_modelo}, que determina todos los atributos de modelo. Por el criterio de descomposición binaria, la reunión no pierde información ni genera combinaciones espurias de una instancia válida de la relación ampliada. Las dependencias de F quedan preservadas en las relaciones separadas.
 
