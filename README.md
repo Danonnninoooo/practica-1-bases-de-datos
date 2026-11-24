@@ -6,7 +6,8 @@
 
 - [Código del backend Flask](web/app.py), [configuración Docker](web/compose.yaml) y [formulario en la portada](index.html).
 - La aplicación usa el rol `usuario_app_renta` y ejecuta una transacción para insertar en `cliente` y `cliente_telefono`.
-- **Estado:** registro de prueba desde el navegador y comprobación independiente mediante SELECT en `cliente` y `cliente_telefono` verificados el 24 de noviembre de 2026 (código 1). [Resultados e incidencia resuelta](web/README.md). Pendiente subir las dos capturas de la web.
+- **Estado:** registro de prueba desde el navegador y comprobación independiente mediante SELECT en `cliente` y `cliente_telefono` verificados el 24 de noviembre de 2026 (código 1). [Resultados e incidencia resuelta](web/README.md). [Evidencias del registro web](web/evidencias/).
+- [Normalización](practica6-8/normalizacion.md): documento inicial; faltan evidencias de ejecución.
 - Todavía pendientes para la exposición: práctica integrada 6–8 (normalización, RelaX y SQL), consultas y árboles de Sismos, análisis del manuscrito y propuestas de mejora.
 
 ---
@@ -17,11 +18,17 @@
 
 ### Datos sintéticos y fuente
 
-Se conserva un catálogo real de **723 registros NHTSA** en ocho JSON; **73 modelos** coinciden con el filtro de vehículos y son cargados desde `practica4/datos/`. El campo `litros_motor` de esos modelos es **sintético**, no una especificación oficial de NHTSA. Los registros de clientes, teléfonos, personal, vehículos, contratos, pagos, revisiones, inspecciones, refacciones y reparaciones se generan sintéticamente; no corresponden a personas ni vehículos reales. La explicación y pendientes de verificación están en [fuente.md](practica4/fuente.md).
+Se conserva un catálogo real de **723 registros NHTSA** en ocho JSON; **73 modelos** coinciden con el filtro de vehículos y son cargados desde `practica4/datos/`. La fórmula sintética original de `litros_motor` se sustituyó por un [catálogo documentado de versiones mexicanas](practica4/motores-mx.md): 68 referencias y cinco cilindradas desconocidas. Aplicar la migración 002 y repetir la carga para actualizar los datos existentes sin modificar sus identificadores. Los registros de clientes, teléfonos, personal, vehículos, contratos, pagos, revisiones, inspecciones, refacciones y reparaciones se generan sintéticamente; no corresponden a personas ni vehículos reales. La explicación y pendientes de verificación están en [fuente.md](practica4/fuente.md).
 
 ### Cargar la base (PostgreSQL 16 en Docker)
 
-Prerequisitos: contenedor `pg-curso` iniciado, base `practica45`, esquema de `practica3/sql/esquema.sql` y migración `practica4/migraciones/001-dominios.sql` ya aplicados.
+Prerequisitos: contenedor `pg-curso` iniciado, base `practica45`, esquema de `practica3/sql/esquema.sql` y migraciones `practica4/migraciones/001-dominios.sql` y `practica4/migraciones/002-motores-mx.sql` ya aplicadas. Para una base existente con la 001 aplicada, ejecutar desde CMD:
+
+```cmd
+docker exec -i pg-curso psql -U postgres -d practica45 -X -v ON_ERROR_STOP=1 < practica4\migraciones\002-motores-mx.sql
+```
+
+La corrección de cilindradas se aplica en la siguiente ejecución de `poblar.sh`; pendiente de verificar localmente.
 
 1. En **CMD** desde la raíz del repositorio, instalar roles y permisos (repetible):
 
@@ -46,7 +53,7 @@ El script usa el usuario `usuario_app_renta` (hereda `rol_app_renta`), no el sup
 - Completar documentación de fuentes y verificar condiciones de reutilización; medición de tiempos de `COPY` frente a inserciones convencionales.
 - Completar pruebas de permisos de aplicación y administración, documentación y pruebas de integridad referencial. Las 12 pruebas de dominio y las pruebas de lectura/REVOKE ya cuentan con evidencias.
 - Práctica 5 (migración de referencias, ejercicios DML y transacciones, almacén de Sismos y aportación individual).
-- Segundo parcial: adjuntar evidencias web, normalización y RelaX/SQL, consultas de Sismos, artículo y presentación.
+- Segundo parcial: normalización y RelaX/SQL, consultas de Sismos, artículo y presentación.
 
 ---
 
