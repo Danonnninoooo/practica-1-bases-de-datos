@@ -20,6 +20,7 @@ echo "Base: $PGDATABASE | Contenedor: $CONTENEDOR | Usuario de aplicacion: $PGUS
 echo "La carga se ejecuta en UNA sola transaccion; un error revierte todos los INSERT/COPY."
 
 if {
+  printf 'BEGIN;\n'
   cat 00-staging.sql
   cat 05-conteos.sql
 
@@ -36,8 +37,9 @@ if {
   cat 10-modelo.sql
   cat 20-sinteticos.sql
   cat 90-resumen.sql
+  printf 'COMMIT;\n'
 } | docker exec -i "$CONTENEDOR" psql -U "$PGUSER" -d "$PGDATABASE" \
-    -X -1 -v ON_ERROR_STOP=1 -P pager=off
+    -X -v ON_ERROR_STOP=1 -P pager=off
 then
   echo "CARGA COMPLETADA: ejecutala una segunda vez para verificar que inserte 0 filas."
 else
