@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Uso (desde la raiz del repo): bash practica4/poblar/poblar.sh
-# Antes de la primera ejecucion: crear roles con practica4/permisos/00-crear-roles.sql
+# Antes de ejecutar: aplicar migraciones 001 y 002 y crear roles con practica4/permisos/00-crear-roles.sql
 # Carga atomica, repetible, masiva para JSON NHTSA y por lotes para datos sinteticos.
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -34,6 +34,7 @@ if {
     printf '\\.\n'
   done
 
+  cat 08-motores-mx.sql
   cat 10-modelo.sql
   cat 20-sinteticos.sql
   cat 90-resumen.sql
