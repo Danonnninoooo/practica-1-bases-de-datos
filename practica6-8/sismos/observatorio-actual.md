@@ -74,6 +74,42 @@ ORDER BY year;
 
 ## Evidencias y límites
 
-Consulta 01 observada el 24 de noviembre de 2026: 10 filas de 2017, 11 ms mostrados por la interfaz (no constituye un benchmark). Pendiente: adjuntar evidencia 30, ejecutar las consultas 02 y 03, comparar sus resultados, exportar una proyección de la misma selección a RelaX y publicar el fork propio. Los 10 registros no equivalen necesariamente a diez eventos físicos distintos; el almacén anterior también utilizaba otra cobertura y un JOIN con una tabla de hechos. Los resultados dependerán de los filtros de la instantánea, no del total inicial de registros. Las evidencias del sistema anterior PHP/PostgreSQL se conservan en consultas.md; no son evidencias del nuevo SQLite.
+Consulta 01 observada el 24 de noviembre de 2026: 10 filas de 2017, 11 ms mostrados por la interfaz (no constituye un benchmark). Consultas 02 y 03 observadas: 10 filas (10 ms) y 9 filas (225 ms), respectivamente. Pendiente: adjuntar evidencias 27–32, comparar con RelaX y publicar el fork propio. Los 10 registros no equivalen necesariamente a diez eventos físicos distintos; el almacén anterior también utilizaba otra cobertura y un JOIN con una tabla de hechos. Los resultados dependerán de los filtros de la instantánea, no del total inicial de registros. Las evidencias del sistema anterior PHP/PostgreSQL se conservan en consultas.md; no son evidencias del nuevo SQLite.
 
 Evidencias de montaje por adjuntar: 27-sismos-version-publicada.png, 28-sismos-fork-actualizado.png y 29-sismos-observatorio-local.png.
+
+
+## Resultados SQLite observados
+
+| Consulta | Filas | Tiempo mostrado |
+|---|---:|---:|
+| 01 Selección/proyección | 10 | 11 ms |
+| 02 Reunión | 10 | 10 ms |
+| 03 Agrupación | 9 | 225 ms |
+
+La reunión muestra dos filas de NRCan, cuatro de SSN y cuatro de USGS México. La agrupación devuelve los pares año/cantidad (2017,11), (2018,14), (2019,10), (2020,28), (2021,20), (2022,25), (2023,17), (2024,23), (2025,21): 169 registros fuente en total. Los tiempos son observaciones de interfaz, no un ensayo de rendimiento.
+
+## Exportación y comparación con RelaX
+
+Sin cambiar la selección, ejecutar una cuarta consulta de solo lectura para conservar todas las filas que satisfacen al menos uno de los filtros de los tres ejercicios. Se incluye row_no para conservar la identidad de cada fila en la agrupación y se toma la etiqueta de su catálogo. No se exporta el almacén entero.
+
+```sql
+SELECT r.row_no, r.record_key, r.catalogue_id, r.year, r.mag, c.label
+FROM records r
+LEFT JOIN catalogs c ON r.catalogue_id = c.catalogue_id
+WHERE (r.year = 2017 AND r.mag >= 6)
+   OR (r.year BETWEEN 2017 AND 2025 AND r.mag BETWEEN 5.9 AND 10)
+ORDER BY r.row_no;
+```
+
+Descargar CSV como `practica6-8/sismos/sqlite-relax.csv`. Desde CMD en la raíz del repositorio ejecutar `python practica6-8\sismos\csv-a-relax.py`. El conversor verifica las cardinalidades y las nueve cantidades anuales contra las capturas SQL. Luego abrir `grupo-relax-actual.txt` e importarlo en el editor de grupos de RelaX. Las relaciones son proyecciones y restricciones del conjunto original; sus cardinalidades intermedias no son las del observatorio completo. No se incorporan controles negativos adicionales. El grupo de catálogos incluye solamente los referenciados por las filas exportadas.
+
+Expresiones pendientes de ejecutar:
+
+```text
+π record_key, year, mag (σ year = 2017 ∧ mag >= 6 (records))
+π record_key, label (σ year = 2017 ∧ mag >= 6 (records ⋈ catalogs))
+γ year; count(*)->cantidad (σ year >= 2017 ∧ year <= 2025 ∧ mag >= 5.9 ∧ mag <= 10 (records))
+```
+
+La única columna compartida por records y catalogs en este grupo es catalogue_id; su reunión natural corresponde al JOIN explícito. Se esperan 10, 10 y 9 filas. El grupo no debe sustituir el conjunto completo para otras consultas.
