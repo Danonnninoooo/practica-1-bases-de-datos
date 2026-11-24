@@ -41,7 +41,7 @@ copy web\.env.example web\.env
 notepad web\.env
 ```
 
-Sustituye `REEMPLAZAR_POR_TU_CONTRASENA` por la contraseña que acabas de asignar a `usuario_app_renta`. Guarda y cierra Bloc de notas.
+Sustituye `REEMPLAZAR_POR_TU_CONTRASENA` por la contraseña que acabas de asignar a `usuario_app_renta`. Para una contraseña alfanumérica puedes usar comillas simples: `DB_PASSWORD='TU_CONTRASENA'` (sustituye el marcador). Guarda y cierra Bloc de notas. En CMD ejecuta `set "DB_PASSWORD="` para evitar que una variable previa de esa sesión prevalezca sobre el archivo.
 
 El archivo `web/.env` está excluido por `.gitignore`; **no se sube a GitHub**.
 
@@ -73,6 +73,21 @@ docker exec pg-curso psql -U usuario_consulta_renta -d practica45 -c "SELECT cod
 La fila resultante debe coincidir con los valores capturados.
 
 **Evidencia:** una captura del formulario con el registro confirmado y otra del `SELECT` donde se ve el mismo código y datos. Guardarlas en `web/evidencias/` cuando la prueba funcione.
+
+## Resultado comprobado — 24 de noviembre de 2026
+
+El formulario mostró `Registro guardado en PostgreSQL` con `cod_cliente = 1`. La verificación independiente desde CMD con `usuario_consulta_renta` confirmó la fila en `cliente` y su teléfono en `cliente_telefono`:
+
+```cmd
+docker exec pg-curso psql -U usuario_consulta_renta -d practica45 -c "SELECT * FROM cliente WHERE cod_cliente = 1;"
+docker exec pg-curso psql -U usuario_consulta_renta -d practica45 -c "SELECT * FROM cliente_telefono WHERE cod_cliente = 1;"
+```
+
+Los datos ficticios observados (nombre, apellidos, correo, CURP de prueba, teléfono y dirección) coinciden con el formulario. `cuenta_banco` quedó nulo porque es opcional. También se observó el rechazo de una CURP con formato inválido antes de registrar la fila válida.
+
+**Incidencia resuelta:** el backend inicialmente devolvía un error de conexión. Una prueba interactiva confirmó que la contraseña introducida manualmente sí autenticaba en PostgreSQL pero no coincidía con la variable `DB_PASSWORD` del contenedor. Se volvió a escribir `web/.env` con la contraseña correcta entre comillas simples, se limpió la variable de la sesión CMD con `set "DB_PASSWORD="` y se recreó solo el contenedor web. Después se comprobó la conexión y el registro. No se almacenan contraseñas en este informe.
+
+Evidencias de la ejecución aportadas por el estudiante (pendientes de subir como archivos): `web/evidencias/07-registro-web.png` y `web/evidencias/08-verificacion-sql.png`.
 
 ## Cómo funciona
 
