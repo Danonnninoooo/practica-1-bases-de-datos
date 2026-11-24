@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    container_name: semanal-autos-web
+    ports:
+      - "127.0.0.1:8081:8081"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: "5432"
+      DB_NAME: practica45
+      DB_USER: usuario_app_renta
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en web/.env}
