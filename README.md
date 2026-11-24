@@ -1,5 +1,16 @@
 # Bases de Datos: Renta semanal de vehículos
 
+## Segundo parcial: aplicación web de Semanal Autos (en preparación)
+
+**Demostración local:** http://localhost:8081/ — requiere Docker y configuración indicada en [web/README.md](web/README.md). La página estática presentada en el primer parcial continúa en [GitHub Pages](https://danonnninoooo.github.io/practica-1-bases-de-datos/), pero **el envío a PostgreSQL solo está habilitado en el backend local**.
+
+- [Código del backend Flask](web/app.py), [configuración Docker](web/compose.yaml) y [formulario en la portada](index.html).
+- La aplicación usa el rol \`usuario_app_renta\` y ejecuta una transacción para insertar en \`cliente\` y \`cliente_telefono\`.
+- **Estado:** archivos creados; pendiente de ejecutar y capturar un registro real desde el navegador y su SELECT de comprobación.
+- Todavía pendientes para la exposición: práctica integrada 6–8 (normalización, RelaX y SQL), consultas y árboles de Sismos, análisis del manuscrito y propuestas de mejora.
+
+---
+
 ## Prácticas 4 y 5 — ejecución y estado (rama de trabajo)
 
 > **ATENCIÓN:** código preparado para prueba local, aún no se ha verificado la ejecución completa de la nueva carga en el contenedor del equipo. No declarar terminadas las prácticas hasta reunir las evidencias.
