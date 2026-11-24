@@ -1,19 +1,19 @@
 # Bases de Datos: Renta semanal de vehículos
 
-## Segundo parcial: aplicación web de Semanal Autos (en preparación)
+## Segundo parcial: aplicación web de Semanal Autos (registro local verificado)
 
 **Demostración local:** http://localhost:8081/ — requiere Docker y configuración indicada en [web/README.md](web/README.md). La página estática presentada en el primer parcial continúa en [GitHub Pages](https://danonnninoooo.github.io/practica-1-bases-de-datos/), pero **el envío a PostgreSQL solo está habilitado en el backend local**.
 
 - [Código del backend Flask](web/app.py), [configuración Docker](web/compose.yaml) y [formulario en la portada](index.html).
 - La aplicación usa el rol `usuario_app_renta` y ejecuta una transacción para insertar en `cliente` y `cliente_telefono`.
-- **Estado:** archivos creados; pendiente de ejecutar y capturar un registro real desde el navegador y su SELECT de comprobación.
+- **Estado:** registro de prueba desde el navegador y comprobación independiente mediante SELECT en `cliente` y `cliente_telefono` verificados el 24 de noviembre de 2026 (código 1). [Resultados e incidencia resuelta](web/README.md). Pendiente subir las dos capturas de la web.
 - Todavía pendientes para la exposición: práctica integrada 6–8 (normalización, RelaX y SQL), consultas y árboles de Sismos, análisis del manuscrito y propuestas de mejora.
 
 ---
 
 ## Prácticas 4 y 5 — ejecución y estado (rama de trabajo)
 
-> **ATENCIÓN:** código preparado para prueba local, aún no se ha verificado la ejecución completa de la nueva carga en el contenedor del equipo. No declarar terminadas las prácticas hasta reunir las evidencias.
+> **Estado:** carga inicial y segunda ejecución sin duplicados verificadas; creación de roles, pruebas de lectura, UPDATE denegado, REVOKE/GRANT y 12 pruebas de dominio verificadas. [Evidencias](practica4/evidencias/). No se consideran terminadas las prácticas: quedan requisitos específicos pendientes.
 
 ### Datos sintéticos y fuente
 
@@ -39,14 +39,14 @@ Prerequisitos: contenedor `pg-curso` iniciado, base `practica45`, esquema de `pr
 
 El script usa el usuario `usuario_app_renta` (hereda `rol_app_renta`), no el superusuario; la ejecución usa conexión local dentro de Docker. La carga de JSON utiliza `COPY` a staging temporal y los sintéticos usan `INSERT ... SELECT` por lotes. `BEGIN/COMMIT` encapsula la operación; con `ON_ERROR_STOP=1` el error detiene `psql` y se revierte la transacción. No se incrustan contraseñas en los scripts nuevos. El `compose.yaml` heredado todavía contiene una credencial de desarrollo: **debe migrarse a configuración por variables de entorno y rotarse** antes de publicar o conectar un backend.
 
-**Resultado esperado en una base con solo 73 modelos:** 240 clientes y teléfonos; 440 empleados (220 mecánicos y 220 administrativos); 240 vehículos y contratos; 960 pagos; 240 revisiones; 720 inspecciones; 240 refacciones y 240 reparaciones. Estas son **cifras esperadas**, no resultados de una ejecución comprobada.
+**Resultado observado en la primera carga sobre una base con solo 73 modelos:** 240 clientes y teléfonos; 440 empleados (220 mecánicos y 220 administrativos); 240 vehículos y contratos; 960 pagos; 240 revisiones; 720 inspecciones; 240 refacciones y 240 reparaciones. Total inicial: 4,313 filas en 13 tablas. La segunda carga insertó cero filas. El registro web posterior añadió un cliente y su teléfono.
 
 ### Entregables todavía pendientes
 
-- Evidencias de la carga primera/segunda, rechazo por restricciones y medición de tiempos de `COPY` frente a inserciones convencionales.
-- Pruebas de restricciones de dominio e integridad referencial; permisos y `REVOKE` con capturas reales.
+- Completar documentación de fuentes y verificar condiciones de reutilización; medición de tiempos de `COPY` frente a inserciones convencionales.
+- Completar pruebas de permisos de aplicación y administración, documentación y pruebas de integridad referencial. Las 12 pruebas de dominio y las pruebas de lectura/REVOKE ya cuentan con evidencias.
 - Práctica 5 (migración de referencias, ejercicios DML y transacciones, almacén de Sismos y aportación individual).
-- Segundo parcial: formulario web conectado al backend/PostgreSQL, normalización y RelaX/SQL, consultas de Sismos, artículo y presentación.
+- Segundo parcial: adjuntar evidencias web, normalización y RelaX/SQL, consultas de Sismos, artículo y presentación.
 
 ---
 
