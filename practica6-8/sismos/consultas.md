@@ -99,7 +99,7 @@ Desde CMD, en la raíz del repositorio principal:
 docker exec -i seismic-data-visualization-system-db-1 psql -U postgres -d datawarehouse -X -v ON_ERROR_STOP=1 -P pager=off < practica6-8\sismos\consultas.sql > practica6-8\sismos\resultados-sql.txt 2>&1
 ```
 
-El nombre del contenedor corresponde al montaje observado anteriormente. Si cambia, consultar docker ps. Se mantienen separados los contenedores de Semanal Autos y Sismos. Pendiente verificar montaje de la web, exportación a RelaX y versión publicada.
+El nombre del contenedor corresponde al montaje observado anteriormente. Si cambia, consultar docker ps. Se mantienen separados los contenedores de Semanal Autos y Sismos. Las consultas de esta versión se verificaron en PostgreSQL y RelaX. La demostración de la versión actual asociada al manuscrito R3 se debe realizar por separado.
 
 ## Resultados SQL observados — 24 de noviembre de 2026
 
@@ -115,7 +115,7 @@ PostgreSQL 17.11, base datawarehouse; COMMIT final sin errores.
 
 Consultas 01, 02 y 03: 32, 2 y 32 filas, respectivamente. La consulta 02 devolvió (94787, 7.1, 2017-09-19, 51.2) y (95584, 6.1, 2017-09-23, 10). No se afirma que estos sean todos los eventos del SSN: el resultado se restringe a los pares asociados por la tabla de hechos del almacén. La dimensión económica reportó cero nombres nulos y cero valores de producción nulos.
 
-Evidencias locales por adjuntar: `evidencias/22-sismos-inventario-consultas.png`, `evidencias/23-sismos-resultados-sql.png` y `resultados-sql.txt`.
+Evidencias subidas en el commit `b8e0314`: `evidencias/22-sismos-inventario-consultas.png`, `evidencias/23-sismos-resultados-sql.png` y `resultados-sql.txt`.
 
 ## Comparación con RelaX
 
@@ -129,7 +129,7 @@ En CMD:
 docker exec -i seismic-data-visualization-system-db-1 psql -U postgres -d datawarehouse -X -qAt -v ON_ERROR_STOP=1 < practica6-8\sismos\exportar-relax.sql > practica6-8\sismos\grupo-relax.txt
 ```
 
-Expresiones para el grupo Sismos (pendientes de ejecutar):
+Expresiones ejecutadas en el grupo Sismos:
 
 ```text
 π pobtot, nom_ent (σ pobtot > 50000 (dim_zonas))
@@ -138,3 +138,15 @@ Expresiones para el grupo Sismos (pendientes de ejecutar):
 ```
 
 Se esperan 32, 2 y 32 filas. Ejecutar cada expresión por separado y comparar con el SQL.
+
+## Resultados RelaX observados
+
+| Consulta | PostgreSQL | RelaX | Evidencia |
+|---|---:|---:|---|
+| 01 | 32 | 32 | [Captura](evidencias/24-sismos-relax-seleccion.png) |
+| 02 | 2 | 2 | [Captura](evidencias/25-sismos-relax-join.png) |
+| 03 | 32 | 32 | [Captura](evidencias/26-sismos-relax-agrupacion.png) |
+
+La reunión de la consulta 02 utiliza una muestra de 27 pares con sus dimensiones; sus dos filas finales coinciden en cardinalidad con SQL. La captura del árbol no muestra las dos tuplas completas. En agrupación, los primeros valores visibles coinciden con el SQL. No se afirma haber comparado automáticamente todas las tuplas. Los archivos [resultados](resultados-sql.txt) y [grupo](grupo-relax.txt) permiten repetir la comparación.
+
+**Alcance:** esta evidencia corresponde al fork anterior basado en PHP/PostgreSQL. El documento del segundo parcial identifica el manuscrito R3 de Seismic_Data_Geosciences; su observatorio actual usa SQLite local en navegador. Véase [análisis R3](manuscrito-r3.md). No se confunden ambas implementaciones.
