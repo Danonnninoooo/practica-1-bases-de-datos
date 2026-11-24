@@ -79,7 +79,7 @@ SELECT vin FROM vehiculo WHERE color='Blanco' INTERSECT SELECT vin FROM vehiculo
 **RelaX:**
 
 ```text
-(π vin (σ color = 'Blanco' (vehiculo))) − (π vin (σ anio = 2020 (vehiculo)))
+(π vin (σ color = 'Blanco' (vehiculo))) - (π vin (σ anio = 2020 (vehiculo)))
 ```
 
 **PostgreSQL:**
