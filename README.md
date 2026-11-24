@@ -8,6 +8,7 @@
 - La aplicación usa el rol `usuario_app_renta` y ejecuta una transacción para insertar en `cliente` y `cliente_telefono`.
 - **Estado:** registro de prueba desde el navegador y comprobación independiente mediante SELECT en `cliente` y `cliente_telefono` verificados el 24 de noviembre de 2026 (código 1). [Resultados e incidencia resuelta](web/README.md). [Evidencias del registro web](web/evidencias/).
 - [Normalización](practica6-8/normalizacion.md): documento inicial; faltan evidencias de ejecución.
+- [Álgebra relacional](practica6-8/algebra.md): nueve ejercicios, [SQL](practica6-8/consultas.sql) y [exportador de grupo RelaX](practica6-8/exportar-relax.sql); pendientes de ejecución y comparación.
 - Todavía pendientes para la exposición: práctica integrada 6–8 (normalización, RelaX y SQL), consultas y árboles de Sismos, análisis del manuscrito y propuestas de mejora.
 
 ---
@@ -28,7 +29,7 @@ Prerequisitos: contenedor `pg-curso` iniciado, base `practica45`, esquema de `pr
 docker exec -i pg-curso psql -U postgres -d practica45 -X -v ON_ERROR_STOP=1 < practica4\migraciones\002-motores-mx.sql
 ```
 
-La corrección de cilindradas se aplica en la siguiente ejecución de `poblar.sh`; pendiente de verificar localmente.
+La corrección de cilindradas se aplica en la siguiente ejecución de `poblar.sh`. Verificada el 24 de noviembre de 2026: 62 actualizaciones, 0 inserciones, 73 modelos y 240 vehículos conservados. [Detalle](practica4/motores-mx.md).
 
 1. En **CMD** desde la raíz del repositorio, instalar roles y permisos (repetible):
 
