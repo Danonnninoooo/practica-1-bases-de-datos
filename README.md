@@ -1,5 +1,44 @@
 # Bases de Datos: Renta semanal de vehículos
 
+## Prácticas 4 y 5 — ejecución y estado (rama de trabajo)
+
+> **ATENCIÓN:** código preparado para prueba local, aún no se ha verificado la ejecución completa de la nueva carga en el contenedor del equipo. No declarar terminadas las prácticas hasta reunir las evidencias.
+
+### Datos sintéticos y fuente
+
+Se conserva un catálogo real de **723 registros NHTSA** en ocho JSON; **73 modelos** coinciden con el filtro de vehículos y son cargados desde `practica4/datos/`. El campo `litros_motor` de esos modelos es **sintético**, no una especificación oficial de NHTSA. Los registros de clientes, teléfonos, personal, vehículos, contratos, pagos, revisiones, inspecciones, refacciones y reparaciones se generan sintéticamente; no corresponden a personas ni vehículos reales. La explicación y pendientes de verificación están en [fuente.md](practica4/fuente.md).
+
+### Cargar la base (PostgreSQL 16 en Docker)
+
+Prerequisitos: contenedor `pg-curso` iniciado, base `practica45`, esquema de `practica3/sql/esquema.sql` y migración `practica4/migraciones/001-dominios.sql` ya aplicados.
+
+1. En **CMD** desde la raíz del repositorio, instalar roles y permisos (repetible):
+
+   ```cmd
+   docker exec -i pg-curso psql -U postgres -d practica45 -X -v ON_ERROR_STOP=1 < practica4\permisos\00-crear-roles.sql
+   ```
+
+2. En **Git Bash**, desde la raíz del repositorio, cargar todo **con un comando**:
+
+   ```bash
+   bash practica4/poblar/poblar.sh
+   ```
+
+3. Ejecutar de nuevo el mismo comando y conservar ambas salidas. La segunda ejecución debe mostrar **cero registros insertados** en todas las tablas.
+
+El script usa el usuario `usuario_app_renta` (hereda `rol_app_renta`), no el superusuario; la ejecución usa conexión local dentro de Docker. La carga de JSON utiliza `COPY` a staging temporal y los sintéticos usan `INSERT ... SELECT` por lotes. `BEGIN/COMMIT` encapsula la operación; con `ON_ERROR_STOP=1` el error detiene `psql` y se revierte la transacción. No se incrustan contraseñas en los scripts nuevos. El `compose.yaml` heredado todavía contiene una credencial de desarrollo: **debe migrarse a configuración por variables de entorno y rotarse** antes de publicar o conectar un backend.
+
+**Resultado esperado en una base con solo 73 modelos:** 240 clientes y teléfonos; 440 empleados (220 mecánicos y 220 administrativos); 240 vehículos y contratos; 960 pagos; 240 revisiones; 720 inspecciones; 240 refacciones y 240 reparaciones. Estas son **cifras esperadas**, no resultados de una ejecución comprobada.
+
+### Entregables todavía pendientes
+
+- Evidencias de la carga primera/segunda, rechazo por restricciones y medición de tiempos de `COPY` frente a inserciones convencionales.
+- Pruebas de restricciones de dominio e integridad referencial; permisos y `REVOKE` con capturas reales.
+- Práctica 5 (migración de referencias, ejercicios DML y transacciones, almacén de Sismos y aportación individual).
+- Segundo parcial: formulario web conectado al backend/PostgreSQL, normalización y RelaX/SQL, consultas de Sismos, artículo y presentación.
+
+---
+
 Instituto Politécnico Nacional, Escuela Superior de Cómputo
 Ingeniería en Sistemas Computacionales, Plan 2020 | Grupo 3CV4
 Profesor: Gabriel Hurtado Avilés
