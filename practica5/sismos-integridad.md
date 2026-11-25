@@ -6,4 +6,21 @@ La tabla de hechos fact_impacto_sismos_imputed contiene referencias a dim_sismos
 
 El esquema declara las cuatro FK sin acciones explícitas (NO ACTION por defecto). El script [05-integridad-sismos.sql](sql/05-integridad-sismos.sql) verifica la instalación, huérfanos, nulos y duplicados de claves; distingue combinaciones repetidas de filas exactamente iguales. Las medidas nulas se informan sin asumir que sean infracciones.
 
-Un almacén puede omitir FK para acelerar cargas masivas o manejar dimensiones tardías; el costo es el riesgo de hechos sin correspondencia y resultados incorrectos en reuniones. Si las cuatro FK están instaladas y validadas no es necesario agregarlas en copia. Si falta alguna, deberá probarse en una copia aislada. Resultados de ejecución pendientes.
+Un almacén puede omitir FK para acelerar cargas masivas o manejar dimensiones tardías; el costo es el riesgo de hechos sin correspondencia y resultados incorrectos en reuniones. Si las cuatro FK están instaladas y validadas no es necesario agregarlas en copia. Si falta alguna, deberá probarse en una copia aislada. 
+
+## Resultados observados en PostgreSQL
+
+Base datawarehouse, esquema public. El script terminó con COMMIT en una transacción de solo lectura. La captura local 41 muestra cuatro PK de dimensiones y cuatro FK de hechos, todas con convalidated = true.
+
+| Comprobación | Resultado |
+|---|---|
+| Huérfanos y referencias nulas (id_sismo, id_zonas, id_economia, id_tiempo) | 0 en cada categoría para cada columna |
+| Grupos duplicados por clave primaria de dimensión | 0 en las cuatro dimensiones |
+| Grupos duplicados por combinación de cuatro referencias de hechos | 0 |
+| Duplicados exactos de hechos | 0 grupos; 0 filas excedentes |
+| Claves de dimensiones nulas | 0 en las cuatro dimensiones |
+| Medidas nulas de hechos | 0 en población, impacto, determinante, riesgo proporcional y zscore |
+
+No fue necesario crear FK adicionales: las cuatro ya existen y están validadas. La tabla de hechos carece de PK o UNIQUE declarada. La combinación de las cuatro referencias es única y no nula en los datos examinados, pero ello no garantiza una regla futura. Antes de imponer una PK compuesta debe confirmarse la granularidad de negocio; si admite varias observaciones por combinación, sería necesario otro identificador. Se conserva el esquema original, sin ALTER TABLE ni cambios de datos.
+
+Evidencia: [41 — auditoría de integridad de Sismos](evidencias/41-sismos-integridad-referencial.png), comprobada en la captura local del estudiante; pendiente de subida.
