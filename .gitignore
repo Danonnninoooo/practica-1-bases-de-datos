@@ -1,0 +1,8 @@
+
+# Archivos de metadatos generados por Windows
+[Dd]esktop.ini
+
+# Credenciales locales del backend (NUNCA subir)
+/web/.env
+**/__pycache__/
+*.pyc

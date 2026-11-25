@@ -1,0 +1,105 @@
+Pager usage is off.
+BEGIN
+=== INVENTARIO DEL ALMACEN SISMOS ===
+     base      |                                                        gestor                                                        
+---------------+----------------------------------------------------------------------------------------------------------------------
+ datawarehouse | PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+(1 row)
+
+            tabla            | filas  
+-----------------------------+--------
+ dim_economia                |     32
+ dim_zonas                   |     32
+ fact_impacto_sismos_imputed | 196576
+ dim_sismos                  | 319592
+ dim_tiempo                  | 319592
+(5 rows)
+
+=== 01 ZONAS CON MAS DE 50000 HABITANTES ===
+  pobtot  |             nom_ent             
+----------+---------------------------------
+  1425607 | Aguascalientes
+  3769020 | Baja California
+   798447 | Baja California Sur
+   928363 | Campeche
+  5543828 | Chiapas
+  3741869 | Chihuahua
+  9209944 | Ciudad de Mexico
+  3146771 | Coahuila de Zaragoza
+   731391 | Colima
+  1832650 | Durango
+  6166934 | Guanajuato
+  3540685 | Guerrero
+  3082841 | Hidalgo
+  8348151 | Jalisco
+ 16992418 | Mexico
+  4748846 | Michoacan de Ocampo
+  1971520 | Morelos
+  1235456 | Nayarit
+  5784442 | Nuevo Leon
+  4132148 | Oaxaca
+  6583278 | Puebla
+  2368467 | Queretaro
+  1857985 | Quintana Roo
+  2822255 | San Luis Potosi
+  3026943 | Sinaloa
+  2944840 | Sonora
+  2402598 | Tabasco
+  3527735 | Tamaulipas
+  1342977 | Tlaxcala
+  8062579 | Veracruz de Ignacio de la Llave
+  2320898 | Yucatan
+  1622138 | Zacatecas
+(32 rows)
+
+=== 02 SISMOS DE MAGNITUD 6 O SUPERIOR EN 2017 ===
+ id_sismo | magnitud |   fecha    | profundidad 
+----------+----------+------------+-------------
+    94787 |      7.1 | 2017-09-19 |        51.2
+    95584 |      6.1 | 2017-09-23 |          10
+(2 rows)
+
+=== 03 PRODUCCION BRUTA TOTAL POR ENTIDAD ===
+         nombre_entidad          | total_produccion 
+---------------------------------+------------------
+ Aguascalientes                  |      2409748.958
+ Baja California                 |       4678905.81
+ Baja California Sur             |       846963.784
+ Campeche                        |       546337.586
+ Chiapas                         |      1167025.518
+ Chihuahua                       |      4253551.738
+ Ciudad de México                |      35386973.52
+ Coahuila de Zaragoza            |      7835937.388
+ Colima                          |       597219.924
+ Durango                         |      1388069.104
+ Guanajuato                      |       8969536.94
+ Guerrero                        |       845426.588
+ Hidalgo                         |      2573586.182
+ Jalisco                         |     10854723.374
+ México                          |     13078293.098
+ Michoacán de Ocampo             |       2308032.98
+ Morelos                         |       1836204.51
+ Nayarit                         |        619927.11
+ Nuevo León                      |     16042716.066
+ Oaxaca                          |      1333011.042
+ Puebla                          |      5256714.704
+ Querétaro de Arteaga            |       5462014.43
+ Quintana Roo                    |      2178560.376
+ San Luis Potosí                 |      4165404.472
+ Sinaloa                         |      2229810.662
+ Sonora                          |      4086788.044
+ Tabasco                         |       1232929.92
+ Tamaulipas                      |       3846449.61
+ Tlaxcala                        |        582931.07
+ Veracruz de Ignacio de la Llave |      4806547.798
+ Yucatán                         |      1722465.736
+ Zacatecas                       |       771667.064
+(32 rows)
+
+=== COMPROBACION NULOS PARA RELAX ===
+ nombres_nulos | produccion_nula 
+---------------+-----------------
+             0 |               0
+(1 row)
+
+COMMIT

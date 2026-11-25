@@ -1,0 +1,162 @@
+group:Sismos - Segundo parcial
+description:Dimensiones completas de zonas y economia; muestra de pares sismo-tiempo con todos los casos de la consulta 02 y controles.
+dim_zonas = {
+id_zonas:number, pobtot:number, nom_ent:string
+0, 1425607, 'Aguascalientes'
+1, 3769020, 'Baja California'
+2, 798447, 'Baja California Sur'
+3, 928363, 'Campeche'
+4, 3146771, 'Coahuila de Zaragoza'
+5, 731391, 'Colima'
+6, 5543828, 'Chiapas'
+7, 3741869, 'Chihuahua'
+8, 9209944, 'Ciudad de Mexico'
+9, 1832650, 'Durango'
+10, 6166934, 'Guanajuato'
+11, 3540685, 'Guerrero'
+12, 3082841, 'Hidalgo'
+13, 8348151, 'Jalisco'
+14, 16992418, 'Mexico'
+15, 4748846, 'Michoacan de Ocampo'
+16, 1971520, 'Morelos'
+17, 1235456, 'Nayarit'
+18, 5784442, 'Nuevo Leon'
+19, 4132148, 'Oaxaca'
+20, 6583278, 'Puebla'
+21, 2368467, 'Queretaro'
+22, 1857985, 'Quintana Roo'
+23, 2822255, 'San Luis Potosi'
+24, 3026943, 'Sinaloa'
+25, 2944840, 'Sonora'
+26, 2402598, 'Tabasco'
+27, 3527735, 'Tamaulipas'
+28, 1342977, 'Tlaxcala'
+29, 8062579, 'Veracruz de Ignacio de la Llave'
+30, 2320898, 'Yucatan'
+31, 1622138, 'Zacatecas'
+}
+dim_economia = {
+id_economia:number, nombre_entidad:string, produccion_bruta_total:number
+0, 'Aguascalientes', 2409748.958
+1, 'Baja California', 4678905.81
+2, 'Baja California Sur', 846963.784
+3, 'Campeche', 546337.586
+4, 'Chiapas', 1167025.518
+5, 'Chihuahua', 4253551.738
+6, 'Ciudad de México', 35386973.52
+7, 'Coahuila de Zaragoza', 7835937.388
+8, 'Colima', 597219.924
+9, 'Durango', 1388069.104
+10, 'Guanajuato', 8969536.94
+11, 'Guerrero', 845426.588
+12, 'Hidalgo', 2573586.182
+13, 'Jalisco', 10854723.374
+14, 'Michoacán de Ocampo', 2308032.98
+15, 'Morelos', 1836204.51
+16, 'México', 13078293.098
+17, 'Nayarit', 619927.11
+18, 'Nuevo León', 16042716.066
+19, 'Oaxaca', 1333011.042
+20, 'Puebla', 5256714.704
+21, 'Querétaro de Arteaga', 5462014.43
+22, 'Quintana Roo', 2178560.376
+23, 'San Luis Potosí', 4165404.472
+24, 'Sinaloa', 2229810.662
+25, 'Sonora', 4086788.044
+26, 'Tabasco', 1232929.92
+27, 'Tamaulipas', 3846449.61
+28, 'Tlaxcala', 582931.07
+29, 'Veracruz de Ignacio de la Llave', 4806547.798
+30, 'Yucatán', 1722465.736
+31, 'Zacatecas', 771667.064
+}
+dim_sismos = {
+id_sismo:number, magnitud:number, profundidad:number
+0, 7.4, 33
+1, 6.9, 33
+2, 6.9, 33
+3, 7, 33
+4, 7, 33
+80699, 3.2, 36.7
+80700, 3.4, 18.3
+80702, 3.5, 8.6
+80703, 3.5, 16
+80704, 3, 9.3
+80706, 4.1, 27.5
+80707, 3.6, 10
+80708, 3.2, 39.9
+80709, 3.8, 5
+80710, 3.4, 10
+80711, 3.6, 20
+80712, 4.4, 16
+80713, 3.8, 16.1
+80714, 3.7, 16.1
+80715, 3.5, 8
+80716, 3.1, 14.4
+80720, 3.6, 12.6
+80721, 3.8, 9.6
+80723, 3.1, 13.6
+80724, 3.9, 122.9
+94787, 7.1, 51.2
+95584, 6.1, 10
+}
+dim_tiempo = {
+id_tiempo:number, fecha:string, anio:number
+0, '1900-01-20', 1900
+1, '1900-05-16', 1900
+2, '1901-03-05', 1901
+3, '1901-12-08', 1901
+4, '1902-01-16', 1902
+80699, '2017-01-01', 2017
+80700, '2017-01-01', 2017
+80702, '2017-01-01', 2017
+80703, '2017-01-01', 2017
+80704, '2017-01-01', 2017
+80706, '2017-01-01', 2017
+80707, '2017-01-01', 2017
+80708, '2017-01-01', 2017
+80709, '2017-01-01', 2017
+80710, '2017-01-01', 2017
+80711, '2017-01-01', 2017
+80712, '2017-01-01', 2017
+80713, '2017-01-01', 2017
+80714, '2017-01-01', 2017
+80715, '2017-01-01', 2017
+80716, '2017-01-01', 2017
+80720, '2017-01-01', 2017
+80721, '2017-01-01', 2017
+80723, '2017-01-01', 2017
+80724, '2017-01-01', 2017
+94787, '2017-09-19', 2017
+95584, '2017-09-23', 2017
+}
+fact_impacto_sismos_imputed = {
+id_sismo:number, id_tiempo:number
+0, 0
+1, 1
+2, 2
+3, 3
+4, 4
+80699, 80699
+80700, 80700
+80702, 80702
+80703, 80703
+80704, 80704
+80706, 80706
+80707, 80707
+80708, 80708
+80709, 80709
+80710, 80710
+80711, 80711
+80712, 80712
+80713, 80713
+80714, 80714
+80715, 80715
+80716, 80716
+80720, 80720
+80721, 80721
+80723, 80723
+80724, 80724
+94787, 94787
+95584, 95584
+}

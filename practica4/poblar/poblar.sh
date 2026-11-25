@@ -1,27 +1,49 @@
 #!/usr/bin/env bash
-# poblar.sh | Carga de datos. Uso: bash practica4/poblar/poblar.sh
+# Uso (desde la raiz del repo): bash practica4/poblar/poblar.sh
+# Antes de ejecutar: aplicar migraciones 001 y 002 y crear roles con practica4/permisos/00-crear-roles.sql
+# Carga atomica, repetible, masiva para JSON NHTSA y por lotes para datos sinteticos.
 set -euo pipefail
 cd "$(dirname "$0")"
 
 CONTENEDOR="${CONTENEDOR:-pg-curso}"
-PGUSER="${PGUSER:-postgres}"
+PGUSER="${PGUSER:-usuario_app_renta}"
 PGDATABASE="${PGDATABASE:-practica45}"
 
-echo "Cargando en la base $PGDATABASE (contenedor $CONTENEDOR, usuario $PGUSER)..."
+shopt -s nullglob
+archivos=(../datos/vpic_*.json)
+if (( ${#archivos[@]} == 0 )); then
+  echo "ERROR: no encontre los datos NHTSA en practica4/datos/." >&2
+  exit 1
+fi
+
+echo "Base: $PGDATABASE | Contenedor: $CONTENEDOR | Usuario de aplicacion: $PGUSER"
+echo "La carga se ejecuta en UNA sola transaccion; un error revierte todos los INSERT/COPY."
 
 if {
+  printf 'BEGIN;\n'
   cat 00-staging.sql
-  for f in ../datos/vpic_*.json; do
-    echo "COPY crudo_vpic (linea) FROM STDIN (FORMAT csv, QUOTE E'\\x01', DELIMITER E'\\x02');"
-    cat "$f"
-    echo
-    echo '\.'
+  cat 05-conteos.sql
+
+  for archivo in "${archivos[@]}"; do
+    printf "%s\n" "COPY crudo_vpic (linea) FROM STDIN (FORMAT csv, QUOTE E'\\x01', DELIMITER E'\\x02');"
+    # No imprimir lineas en blanco adicionales: cada archivo contiene un JSON
+    # compacto por linea; los datos quedan en una tabla temporal.
+    while IFS= read -r linea || [[ -n "$linea" ]]; do
+      printf '%s\n' "$linea"
+    done < "$archivo"
+    printf '\\.\n'
   done
+
+  cat 08-motores-mx.sql
   cat 10-modelo.sql
-} | docker exec -i -e PGPASSWORD "$CONTENEDOR" psql -U "$PGUSER" -d "$PGDATABASE" -X -q -1 -v ON_ERROR_STOP=1
+  cat 20-sinteticos.sql
+  cat 90-resumen.sql
+  printf 'COMMIT;\n'
+} | docker exec -i "$CONTENEDOR" psql -U "$PGUSER" -d "$PGDATABASE" \
+    -X -v ON_ERROR_STOP=1 -P pager=off
 then
-  echo "Carga terminada."
+  echo "CARGA COMPLETADA: ejecutala una segunda vez para verificar que inserte 0 filas."
 else
-  echo "LA CARGA FALLO Y SE REVIRTIO TODO. Revisa el mensaje de ERROR de arriba."
+  echo "ERROR: la carga fallo y se revirtio la transaccion. Copia el ERROR mostrado arriba." >&2
   exit 1
 fi

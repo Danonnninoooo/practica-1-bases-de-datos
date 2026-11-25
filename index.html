@@ -62,6 +62,22 @@
   .btn:hover { background: #ffd333; }
   .cta p { color: var(--muted); margin-bottom: 20px; }
 
+
+  .form-card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:30px; box-shadow:0 12px 30px rgba(16,35,58,.06); }
+  .form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .form-grid label { display:flex; flex-direction:column; font-size:.9rem; font-weight:700; gap:6px; }
+  .form-grid input { width:100%; padding:11px 12px; border:1px solid #aab9bd; border-radius:6px; font:inherit; background:#fff; }
+  .form-grid input:focus { outline:2px solid var(--road); outline-offset:1px; }
+  .form-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:22px; }
+  .form-actions button { cursor:pointer; border:0; border-radius:6px; padding:13px 22px; font:inherit; font-weight:750; background:var(--signal); color:var(--ink); }
+  .form-actions button.secondary { background:#e7edf1; }
+  .form-actions button:disabled { opacity:.65; cursor:wait; }
+  .system-message { margin:14px 0 20px; color:var(--muted); font-size:.95rem; }
+  .result { padding:14px; border-radius:7px; margin-top:18px; white-space:pre-wrap; overflow-wrap:anywhere; background:#eef5f8; }
+  .result[hidden] { display:none; }
+  .form-intro { color:var(--muted); max-width:78ch; margin-bottom:22px; }
+  @media (max-width:650px) { .form-grid {grid-template-columns:1fr;} .form-card {padding:18px;} }
+
   footer { background: var(--ink); color: #c7d3de; padding: 28px 0; font-size: .9rem; }
   @media (max-width: 560px) { .week { grid-template-columns: repeat(4, 1fr); } }
 </style>
@@ -75,6 +91,7 @@
       <div>
         <a class="link" href="#como">Cómo funciona</a>
         <a class="link" href="#autos">Autos</a>
+        <a class="link" href="#registro">Registrar cliente</a>
         <a class="link" href="#contacto">Contacto</a>
       </div>
     </nav>
@@ -130,10 +147,40 @@
     </div>
   </section>
 
+
+  <section id="registro">
+    <div class="wrap">
+      <h2>Registrar un cliente</h2>
+      <p class="form-intro">Demostración escolar de registro real en PostgreSQL. Utiliza solamente datos ficticios: no introduzcas información personal auténtica.</p>
+      <div class="form-card">
+        <p class="system-message" id="estado-servidor" role="status">Comprobando conexión con el backend...</p>
+        <form id="form-cliente">
+          <div class="form-grid">
+            <label>Nombre(s) <input name="nombre" maxlength="60" required autocomplete="off"></label>
+            <label>Apellido paterno <input name="ap_paterno" maxlength="40" required autocomplete="off"></label>
+            <label>Apellido materno (opcional) <input name="ap_materno" maxlength="40" autocomplete="off"></label>
+            <label>CURP de prueba <input name="curp" minlength="18" maxlength="18" required autocomplete="off" placeholder="DEMO991231HABCDE10"></label>
+            <label>Correo de prueba <input name="correo" type="email" maxlength="100" required autocomplete="off" placeholder="demo@ejemplo.test"></label>
+            <label>Teléfono de prueba (10 dígitos) <input name="telefono" pattern="[0-9]{10}" maxlength="10" required autocomplete="off"></label>
+            <label>Calle <input name="calle" maxlength="80" required autocomplete="off"></label>
+            <label>Colonia <input name="colonia" maxlength="60" required autocomplete="off"></label>
+            <label>Código postal (5 dígitos) <input name="cp" pattern="[0-9]{5}" maxlength="5" required autocomplete="off"></label>
+            <label>Municipio <input name="municipio" maxlength="60" required autocomplete="off"></label>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="secondary" id="rellenar-demo">Rellenar datos ficticios</button>
+            <button type="submit" id="btn-guardar">Registrar en PostgreSQL</button>
+          </div>
+        </form>
+        <pre id="resultado-registro" class="result" role="status" aria-live="polite" hidden></pre>
+      </div>
+    </div>
+  </section>
+
   <section class="cta" id="contacto">
     <div class="wrap">
       <h2>Empieza esta semana</h2>
-      <p>Esta página es la portada del sistema terminado: la base de datos y el sistema completo viven en el repositorio del proyecto.</p>
+      <p>El registro se demuestra en la versión local con Docker y PostgreSQL. GitHub Pages muestra la portada; las claves de acceso solo se guardan en el servidor.</p>
       <a class="btn" href="https://github.com/Danonnninoooo/practica-1-bases-de-datos">Ver el repositorio</a>
     </div>
   </section>
@@ -142,6 +189,79 @@
 <footer>
   <div class="wrap">Proyecto de Bases de Datos, ESCOM-IPN, grupo 3CV4. Daniel Patiño Farias, Arath Sebastian Sanchez Valenzuela y Alejandro Rivas Ramirez.</div>
 </footer>
+
+
+<script>
+(() => {
+  "use strict";
+  const formulario = document.getElementById("form-cliente");
+  const estado = document.getElementById("estado-servidor");
+  const resultado = document.getElementById("resultado-registro");
+  const boton = document.getElementById("btn-guardar");
+  const mostrar = (mensaje) => {
+    resultado.hidden = false;
+    resultado.textContent = mensaje;
+  };
+
+  async function comprobarConexion() {
+    try {
+      const respuesta = await fetch("/api/health", {cache: "no-store"});
+      if (!respuesta.ok) throw new Error("Backend no disponible");
+      const info = await respuesta.json();
+      if (info.estado !== "ok") throw new Error("PostgreSQL no disponible");
+      estado.textContent = "Conectado a PostgreSQL: " + info.base + " | usuario: " + info.usuario;
+    } catch (_) {
+      estado.textContent = "Registro disponible desde http://localhost:8081 después de iniciar el backend local. La versión de GitHub Pages no almacena registros.";
+    }
+  }
+
+  document.getElementById("rellenar-demo").addEventListener("click", () => {
+    const numeros = String(Math.floor(100000 + Math.random() * 900000));
+    const demo = {
+      nombre: "Persona", ap_paterno: "Demostracion", ap_materno: "Sintetica",
+      curp: "DEMO" + numeros + "HABCDE10",
+      correo: "demo" + numeros + "@ejemplo.test",
+      telefono: "55" + String(Math.floor(10000000 + Math.random() * 90000000)),
+      calle: "Calle de prueba " + numeros, colonia: "Colonia Demo",
+      cp: "55000", municipio: "Ecatepec de Morelos"
+    };
+    for (const [campo, valor] of Object.entries(demo)) {
+      formulario.elements.namedItem(campo).value = valor;
+    }
+    mostrar("Datos ficticios listos. Presiona Registrar en PostgreSQL para enviarlos.");
+  });
+
+  formulario.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    boton.disabled = true;
+    mostrar("Guardando registro...");
+    const datos = Object.fromEntries(new FormData(formulario).entries());
+    try {
+      const respuesta = await fetch("/api/clientes", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(datos)
+      });
+      const texto = await respuesta.text();
+      let info;
+      try { info = JSON.parse(texto); }
+      catch (_) { throw new Error("El backend no respondió con JSON. Abre http://localhost:8081 para realizar el registro."); }
+      if (!respuesta.ok) throw new Error(info.error || "No se pudo registrar.");
+      mostrar(info.mensaje + "\nCódigo de cliente: " + info.cliente.cod_cliente +
+        "\nNombre: " + info.cliente.nombre + " " + info.cliente.ap_paterno +
+        "\nCorreo: " + info.cliente.correo +
+        "\nTeléfono: " + info.cliente.telefono +
+        "\n\nVerificar con SQL:\nSELECT cod_cliente, nombre, ap_paterno, correo FROM cliente WHERE cod_cliente = " +
+        info.cliente.cod_cliente + ";");
+    } catch (error) {
+      mostrar("No se guardó el registro: " + error.message);
+    } finally {
+      boton.disabled = false;
+    }
+  });
+  comprobarConexion();
+})();
+</script>
 
 </body>
 </html>

@@ -1,5 +1,63 @@
 # Bases de Datos: Renta semanal de vehículos
 
+## Segundo parcial: aplicación web de Semanal Autos (registro local verificado)
+
+**Demostración local:** http://localhost:8081/ — requiere Docker y configuración indicada en [web/README.md](web/README.md). La página estática presentada en el primer parcial continúa en [GitHub Pages](https://danonnninoooo.github.io/practica-1-bases-de-datos/), pero **el envío a PostgreSQL solo está habilitado en el backend local**.
+
+- [Código del backend Flask](web/app.py), [configuración Docker](web/compose.yaml) y [formulario en la portada](index.html).
+- La aplicación usa el rol `usuario_app_renta` y ejecuta una transacción para insertar en `cliente` y `cliente_telefono`.
+- **Estado:** registro de prueba desde el navegador y comprobación independiente mediante SELECT en `cliente` y `cliente_telefono` verificados el 24 de noviembre de 2026 (código 1). [Resultados e incidencia resuelta](web/README.md). [Evidencias del registro web](web/evidencias/).
+- [Normalización](practica6-8/normalizacion.md): documento inicial; faltan evidencias de ejecución.
+- [Álgebra relacional](practica6-8/algebra.md): nueve ejercicios, [SQL](practica6-8/consultas.sql) y [exportador de grupo RelaX](practica6-8/exportar-relax.sql); pendientes de ejecución y comparación.
+- Todavía pendientes para la exposición: práctica integrada 6–8 (normalización, RelaX y SQL), consultas y árboles de Sismos, análisis del manuscrito y propuestas de mejora.
+
+---
+
+## Prácticas 4 y 5 — ejecución y estado (rama de trabajo)
+
+> **Estado:** carga inicial y segunda ejecución sin duplicados verificadas; creación de roles, pruebas de lectura, UPDATE denegado, REVOKE/GRANT y 12 pruebas de dominio verificadas. [Evidencias](practica4/evidencias/). No se consideran terminadas las prácticas: quedan requisitos específicos pendientes.
+
+### Datos sintéticos y fuente
+
+Se conserva un catálogo real de **723 registros NHTSA** en ocho JSON; **73 modelos** coinciden con el filtro de vehículos y son cargados desde `practica4/datos/`. La fórmula sintética original de `litros_motor` se sustituyó por un [catálogo documentado de versiones mexicanas](practica4/motores-mx.md): 68 referencias y cinco cilindradas desconocidas. Aplicar la migración 002 y repetir la carga para actualizar los datos existentes sin modificar sus identificadores. Los registros de clientes, teléfonos, personal, vehículos, contratos, pagos, revisiones, inspecciones, refacciones y reparaciones se generan sintéticamente; no corresponden a personas ni vehículos reales. La explicación y pendientes de verificación están en [fuente.md](practica4/fuente.md).
+
+### Cargar la base (PostgreSQL 16 en Docker)
+
+Prerequisitos: contenedor `pg-curso` iniciado, base `practica45`, esquema de `practica3/sql/esquema.sql` y migraciones `practica4/migraciones/001-dominios.sql` y `practica4/migraciones/002-motores-mx.sql` ya aplicadas. Para una base existente con la 001 aplicada, ejecutar desde CMD:
+
+```cmd
+docker exec -i pg-curso psql -U postgres -d practica45 -X -v ON_ERROR_STOP=1 < practica4\migraciones\002-motores-mx.sql
+```
+
+La corrección de cilindradas se aplica en la siguiente ejecución de `poblar.sh`. Verificada el 24 de noviembre de 2026: 62 actualizaciones, 0 inserciones, 73 modelos y 240 vehículos conservados. [Detalle](practica4/motores-mx.md).
+
+1. En **CMD** desde la raíz del repositorio, instalar roles y permisos (repetible):
+
+   ```cmd
+   docker exec -i pg-curso psql -U postgres -d practica45 -X -v ON_ERROR_STOP=1 < practica4\permisos\00-crear-roles.sql
+   ```
+
+2. En **Git Bash**, desde la raíz del repositorio, cargar todo **con un comando**:
+
+   ```bash
+   bash practica4/poblar/poblar.sh
+   ```
+
+3. Ejecutar de nuevo el mismo comando y conservar ambas salidas. La segunda ejecución debe mostrar **cero registros insertados** en todas las tablas.
+
+El script usa el usuario `usuario_app_renta` (hereda `rol_app_renta`), no el superusuario; la ejecución usa conexión local dentro de Docker. La carga de JSON utiliza `COPY` a staging temporal y los sintéticos usan `INSERT ... SELECT` por lotes. `BEGIN/COMMIT` encapsula la operación; con `ON_ERROR_STOP=1` el error detiene `psql` y se revierte la transacción. No se incrustan contraseñas en los scripts nuevos. El `compose.yaml` heredado todavía contiene una credencial de desarrollo: **debe migrarse a configuración por variables de entorno y rotarse** antes de publicar o conectar un backend.
+
+**Resultado observado en la primera carga sobre una base con solo 73 modelos:** 240 clientes y teléfonos; 440 empleados (220 mecánicos y 220 administrativos); 240 vehículos y contratos; 960 pagos; 240 revisiones; 720 inspecciones; 240 refacciones y 240 reparaciones. Total inicial: 4,313 filas en 13 tablas. La segunda carga insertó cero filas. El registro web posterior añadió un cliente y su teléfono.
+
+### Entregables todavía pendientes
+
+- Completar documentación de fuentes y verificar condiciones de reutilización; medición de tiempos de `COPY` frente a inserciones convencionales.
+- Completar pruebas de permisos de aplicación y administración, documentación y pruebas de integridad referencial. Las 12 pruebas de dominio y las pruebas de lectura/REVOKE ya cuentan con evidencias.
+- Práctica 5 (migración de referencias, ejercicios DML y transacciones, almacén de Sismos y aportación individual).
+- Segundo parcial: normalización y RelaX/SQL, consultas de Sismos, artículo y presentación.
+
+---
+
 Instituto Politécnico Nacional, Escuela Superior de Cómputo
 Ingeniería en Sistemas Computacionales, Plan 2020 | Grupo 3CV4
 Profesor: Gabriel Hurtado Avilés
