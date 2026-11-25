@@ -74,9 +74,9 @@ ORDER BY year;
 
 ## Evidencias y límites
 
-Consulta 01 observada el 24 de noviembre de 2026: 10 filas de 2017, 11 ms mostrados por la interfaz (no constituye un benchmark). Consultas 02 y 03 observadas: 10 filas (10 ms) y 9 filas (225 ms), respectivamente. Pendiente: adjuntar evidencias 27–32, comparar con RelaX y publicar el fork propio. Los 10 registros no equivalen necesariamente a diez eventos físicos distintos; el almacén anterior también utilizaba otra cobertura y un JOIN con una tabla de hechos. Los resultados dependerán de los filtros de la instantánea, no del total inicial de registros. Las evidencias del sistema anterior PHP/PostgreSQL se conservan en consultas.md; no son evidencias del nuevo SQLite.
+Consulta 01 observada el 24 de noviembre de 2026: 10 filas de 2017, 11 ms mostrados por la interfaz (no constituye un benchmark). Consultas 02 y 03 observadas: 10 filas (10 ms) y 9 filas (225 ms), respectivamente. Las evidencias 27–35 y los archivos de exportación quedaron subidos en el commit `ee7eeed`; la comparación con RelaX se verificó. Pendiente publicar el fork propio. Los 10 registros no equivalen necesariamente a diez eventos físicos distintos; el almacén anterior también utilizaba otra cobertura y un JOIN con una tabla de hechos. Los resultados dependerán de los filtros de la instantánea, no del total inicial de registros. Las evidencias del sistema anterior PHP/PostgreSQL se conservan en consultas.md; no son evidencias del nuevo SQLite.
 
-Evidencias de montaje por adjuntar: 27-sismos-version-publicada.png, 28-sismos-fork-actualizado.png y 29-sismos-observatorio-local.png.
+Evidencias de montaje adjuntas en evidencias/: 27-sismos-version-publicada.png, 28-sismos-fork-actualizado.png y 29-sismos-observatorio-local.png.
 
 
 ## Resultados SQLite observados
@@ -104,7 +104,7 @@ ORDER BY r.row_no;
 
 Descargar CSV como `practica6-8/sismos/sqlite-relax.csv`. Desde CMD en la raíz del repositorio ejecutar `python practica6-8\sismos\csv-a-relax.py`. El conversor verifica las cardinalidades y las nueve cantidades anuales contra las capturas SQL. Luego abrir `grupo-relax-actual.txt` e importarlo en el editor de grupos de RelaX. Las relaciones son proyecciones y restricciones del conjunto original; sus cardinalidades intermedias no son las del observatorio completo. No se incorporan controles negativos adicionales. El grupo de catálogos incluye solamente los referenciados por las filas exportadas.
 
-Expresiones pendientes de ejecutar:
+Expresiones ejecutadas en RelaX:
 
 ```text
 π record_key, year, mag (σ year = 2017 ∧ mag >= 6 (records))
@@ -113,3 +113,17 @@ Expresiones pendientes de ejecutar:
 ```
 
 La única columna compartida por records y catalogs en este grupo es catalogue_id; su reunión natural corresponde al JOIN explícito. Se esperan 10, 10 y 9 filas. El grupo no debe sustituir el conjunto completo para otras consultas.
+
+## Comparación comprobada — 24 de noviembre de 2026
+
+El conversor Python validó 10 filas para selección, 10 para reunión y las nueve cantidades anuales; generó un grupo de 169 registros y cuatro catálogos. Archivos: [CSV](sqlite-relax.csv), [grupo RelaX](grupo-relax-actual.txt).
+
+| Consulta | SQLite | RelaX | Evidencias |
+|---|---:|---:|---|
+| Selección y proyección | 10 | 10 | [SQLite](evidencias/30-sismos-sqlite-seleccion.png) · [RelaX](evidencias/33-sismos-actual-relax-seleccion.png) |
+| Reunión | 10 | 10 | [SQLite](evidencias/31-sismos-sqlite-join.png) · [RelaX](evidencias/34-sismos-actual-relax-join.png) |
+| Agrupación | 9 | 9 | [SQLite](evidencias/32-sismos-sqlite-agrupacion.png) · [RelaX](evidencias/35-sismos-actual-relax-agrupacion.png) |
+
+Las capturas muestran cardinalidades iguales y coincidencia de los valores visibles; no muestran todas las tuplas de RelaX. Los árboles usan el grupo reducido: 169 filas de records, cuatro de catalogs y 169 tras su reunión. La selección reduce a diez y la agrupación a nueve. No se comparan los tiempos de ejecución como benchmark.
+
+Montaje: [versión original](evidencias/27-sismos-version-publicada.png), [fork](evidencias/28-sismos-fork-actualizado.png), [local](evidencias/29-sismos-observatorio-local.png). La publicación propia requiere habilitar GitHub Actions y seleccionar GitHub Actions como origen en Settings > Pages; ejecutar el flujo existente Publish seismic explorer. No se modificó ese flujo ni el código original del observatorio.
